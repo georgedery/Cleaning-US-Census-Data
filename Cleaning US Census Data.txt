@@ -1,0 +1,31 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import codecademylib3_seaborn
+import glob
+files = glob.glob('states*.csv')
+df_list = []
+for filename in files:
+  data = pd.read_csv(filename)
+  df_list.append(data)
+us_census = pd.concat(df_list)
+
+print(us_census.dtypes)
+# print(us_census.columns)
+
+# print(us_census.head())
+
+us_census.Income = us_census.Income.replace('[\$]',' ', regex=True)
+
+population_split =us_census.GenderPop.str.split('_')
+us_census['men_population'] = population_split.str.get(0)
+us_census['women_population'] = population_split.str.get(1)
+
+pop_split = pd.DataFrame()
+us_census['men_pop'] = us_census.men_population.str[0:-1]
+us_census['women_pop'] = us_census.women_population.str[0:-1]
+# us_census.men_pop = pd.to_numeric(us_census.men_pop)
+# us_census.women_pop = pd.to_numeric(us_census.women_pop)
+
+us_census = pd.concat([us_census, pop_split], axis = 1)
+print(us_census.head())
